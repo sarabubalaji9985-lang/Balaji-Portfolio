@@ -1,0 +1,235 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Exact Palette: #0A1931, #B3CFE5, #4A7FA7, #1A3D63, #F6FAFD */
+    --bg-canvas: #F6FAFD;
+    --text-primary: #0A1931;
+    --text-secondary: #36536F;
+    --text-muted: #63809C;
+    --border-subtle: #D8E5EF;
+    --accent: #4A7FA7;
+    --accent-deep: #1A3D63;
+    --accent-light: #B3CFE5;
+    --glow-ocean: rgba(74, 127, 167, 0.25);
+  }
+
+  .dark {
+    --bg-canvas: #0A1931;
+    --text-primary: #F6FAFD;
+    --text-secondary: #B3CFE5;
+    --text-muted: #809FB9;
+    --border-subtle: #1A3D63;
+    --accent: #B3CFE5;
+    --accent-deep: #4A7FA7;
+    --accent-light: #1A3D63;
+    --glow-ocean: rgba(179, 207, 229, 0.2);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: rgba(179, 207, 229, 0.4);
+    color: #0A1931;
+  }
+}
+
+/* ─── Ocean Steel Custom Scrollbar ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: #B3CFE5;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover { background: #4A7FA7; }
+
+/* ─── Hide Scrollbar Utility ─── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ─── Ocean Shimmer Text ─── */
+.text-ocean-shimmer {
+  background: linear-gradient(90deg, #1A3D63 0%, #4A7FA7 40%, #B3CFE5 50%, #4A7FA7 60%, #1A3D63 100%);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+.dark .text-ocean-shimmer {
+  background: linear-gradient(90deg, #B3CFE5 0%, #F6FAFD 40%, #B3CFE5 50%, #4A7FA7 60%, #B3CFE5 100%);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+/* ─── Ambient Oceanic Mesh Background ─── */
+.bg-ocean-mesh {
+  background:
+    radial-gradient(ellipse at 15% 25%, rgba(179, 207, 229, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 20%, rgba(74, 127, 167, 0.12) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 85%, rgba(26, 61, 99, 0.05) 0%, transparent 60%);
+}
+
+.dark .bg-ocean-mesh {
+  background:
+    radial-gradient(ellipse at 15% 25%, rgba(74, 127, 167, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 20%, rgba(26, 61, 99, 0.35) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 85%, rgba(179, 207, 229, 0.08) 0%, transparent 60%);
+}
+
+/* ─── 3D Card Hover ─── */
+.card-3d {
+  transition: transform 0.15s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
+  transform-style: preserve-3d;
+}
+
+/* ─── Pill Badge ─── */
+.badge-ocean {
+  background: #EBF3F9;
+  border: 1px solid #B3CFE5;
+  color: #1A3D63;
+}
+
+.dark .badge-ocean {
+  background: rgba(26, 61, 99, 0.4);
+  border: 1px solid rgba(179, 207, 229, 0.25);
+  color: #B3CFE5;
+}
+
+/* ─── Section Divider ─── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(74, 127, 167, 0.3), rgba(179, 207, 229, 0.6), transparent);
+}
+
+/* ─── Form Inputs ─── */
+.input-ocean {
+  background: #FFFFFF;
+  border: 1px solid #D8E5EF;
+  transition: all 0.2s ease;
+}
+.input-ocean:focus {
+  border-color: #4A7FA7;
+  box-shadow: 0 0 0 3px rgba(74, 127, 167, 0.18);
+  outline: none;
+}
+.dark .input-ocean {
+  background: #10243E;
+  border-color: #1A3D63;
+  color: #F6FAFD;
+}
+.dark .input-ocean:focus {
+  border-color: #B3CFE5;
+  box-shadow: 0 0 0 3px rgba(179, 207, 229, 0.2);
+}
+
+/* ─── Tag Chips ─── */
+.chip-ocean {
+  background: #F6FAFD;
+  border: 1px solid #D8E5EF;
+  color: #36536F;
+  transition: all 0.2s ease;
+}
+.chip-ocean:hover {
+  background: #EBF3F9;
+  border-color: #4A7FA7;
+  color: #1A3D63;
+  transform: translateY(-1px);
+}
+.dark .chip-ocean {
+  background: #10243E;
+  border-color: #1A3D63;
+  color: #B3CFE5;
+}
+.dark .chip-ocean:hover {
+  background: #1A3D63;
+  border-color: #B3CFE5;
+  color: #F6FAFD;
+}
+
+/* ─── Animation Keyframes ─── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.95; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Infinite Marquee Ticker ─── */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marqueeReverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 34s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.animate-marquee-reverse {
+  display: flex;
+  width: max-content;
+  animation: marqueeReverse 38s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
+.mask-marquee {
+  mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
