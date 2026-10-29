@@ -73,6 +73,7 @@ export function App() {
   return (
     <BrowserRouter
       future={{
+        v7_startTransition: true,
         v7_relativeSplatPath: true,
       }}
     >
@@ -140,8 +141,8 @@ export function App() {
         />
 
         {/* Vercel Web Analytics & Performance Insights */}
-        <Analytics />
-        <SpeedInsights />
+        <Analytics debug={false} />
+        <SpeedInsights debug={false} />
       </div>
     </BrowserRouter>
   );
