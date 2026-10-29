@@ -20,6 +20,18 @@ export const Navbar = ({ onOpenResume, isDarkMode, onToggleDarkMode, onOpenComma
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
+  // Lock body scroll when mobile menu is open to prevent background bleed/scroll
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
   const voiceMessages = {
     '/': 'Navigating to Home.',
     '/projects': 'Opening Projects.',
@@ -57,10 +69,15 @@ export const Navbar = ({ onOpenResume, isDarkMode, onToggleDarkMode, onOpenComma
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-20 sm:h-[88px] flex items-center ${
-        isScrolled || !isHomePage
-          ? 'bg-white/95 dark:bg-canvas-dark/95 backdrop-blur-xl border-b border-ink-border dark:border-ink-dark-border shadow-subtle'
+        isScrolled || !isHomePage || isMobileMenuOpen
+          ? 'bg-white dark:bg-[#0A1931] border-b border-ink-border dark:border-ink-dark-border shadow-subtle'
           : 'bg-transparent'
       }`}
+      style={{
+        backgroundColor: isMobileMenuOpen || isScrolled || !isHomePage
+          ? (isDarkMode ? '#0A1931' : '#FFFFFF')
+          : 'transparent'
+      }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-8 w-full flex items-center justify-between relative">
 
@@ -233,11 +250,18 @@ export const Navbar = ({ onOpenResume, isDarkMode, onToggleDarkMode, onOpenComma
         </div>
       </div>
 
-      {/* Mobile Drawer (Positioned flush below navbar) */}
+      {/* Mobile Drawer (100% Solid Opaque Luxury Overlay - Zero Content Bleed) */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white/98 dark:bg-[#0A1931]/98 backdrop-blur-2xl border-b border-ink-border dark:border-ink-dark-border px-6 py-6 shadow-2xl animate-fade-in z-50">
-          <nav className="flex flex-col space-y-4">
-            {NAV_LINKS.map((link) => {
+        <div
+          className="md:hidden fixed inset-x-0 top-20 sm:top-[88px] bottom-0 z-50 overflow-y-auto px-6 py-6 border-t border-ink-border/40 dark:border-ink-dark-border/40 shadow-2xl flex flex-col justify-between"
+          style={{
+            backgroundColor: isDarkMode ? '#0A1931' : '#FFFFFF',
+            color: isDarkMode ? '#F6FAFD' : '#0A1931'
+          }}
+        >
+          {/* Nav Links */}
+          <nav className="flex flex-col space-y-2 pt-2">
+            {NAV_LINKS.map((link, idx) => {
               const isActive = location.pathname === link.href;
               return (
                 <Link
@@ -247,35 +271,51 @@ export const Navbar = ({ onOpenResume, isDarkMode, onToggleDarkMode, onOpenComma
                     setIsMobileMenuOpen(false);
                     handleNavVoice(link.href);
                   }}
-                  className={`text-base font-medium py-1 transition-colors ${
-                    isActive ? 'text-accent font-semibold' : 'text-ink-secondary dark:text-ink-dark-secondary'
+                  className={`flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-200 text-lg font-medium ${
+                    isActive
+                      ? 'bg-accent/15 text-accent-deep dark:text-accent font-semibold border border-accent/30'
+                      : 'text-ink-primary dark:text-ink-dark-primary hover:bg-canvas-subtle dark:hover:bg-canvas-dark-surface'
                   }`}
                 >
-                  {link.name}
+                  <span className="flex items-center gap-3">
+                    <span className="text-xs font-mono text-accent/70">0{idx + 1}</span>
+                    <span>{link.name}</span>
+                  </span>
+                  {isActive && (
+                    <span className="w-2.5 h-2.5 rounded-full bg-accent shadow-[0_0_8px_rgba(74,127,167,0.8)]" />
+                  )}
                 </Link>
               );
             })}
-            <div className="pt-4 border-t border-ink-border dark:border-ink-dark-border flex flex-col gap-3">
-              <button
-                onClick={handleResumeClick}
-                className="w-full py-2.5 text-xs font-mono font-medium rounded-xl border border-ink-border dark:border-ink-dark-border text-ink-primary dark:text-ink-dark-primary flex items-center justify-center gap-2"
-              >
-                <FileText className="w-4 h-4 text-accent" />
-                View Resume
-              </button>
-              <Link
-                to="/contact"
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  handleNavVoice('/contact');
-                }}
-                className="w-full py-3 text-xs font-semibold rounded-full text-center text-white flex items-center justify-center gap-2 shadow-md bg-gradient-to-r from-[#1A3D63] to-[#4A7FA7]"
-              >
-                <span>Let's Talk</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </div>
           </nav>
+
+          {/* Bottom Actions */}
+          <div className="pt-6 mt-6 border-t border-ink-border/40 dark:border-ink-dark-border/40 flex flex-col gap-3.5 pb-8">
+            <div className="flex items-center justify-between px-2 text-xs font-mono text-ink-muted dark:text-ink-dark-muted">
+              <span>VOICE: {isVoiceEnabled ? 'ACTIVE' : 'MUTED'}</span>
+              <span>+91 9030545655</span>
+            </div>
+
+            <button
+              onClick={handleResumeClick}
+              className="w-full py-3 text-xs font-mono font-medium rounded-xl border border-ink-border dark:border-ink-dark-border bg-canvas-subtle dark:bg-[#162F4F] text-ink-primary dark:text-ink-dark-primary hover:border-accent transition-colors flex items-center justify-center gap-2 shadow-xs"
+            >
+              <FileText className="w-4 h-4 text-accent" />
+              <span>View Official Resume</span>
+            </button>
+
+            <Link
+              to="/contact"
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                handleNavVoice('/contact');
+              }}
+              className="w-full py-3.5 text-xs font-semibold rounded-full text-center text-white flex items-center justify-center gap-2 shadow-lg bg-gradient-to-r from-[#1A3D63] via-[#4A7FA7] to-[#1A3D63] hover:opacity-95 transition-opacity"
+            >
+              <span>Let's Talk</span>
+              <ArrowUpRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       )}
     </header>
