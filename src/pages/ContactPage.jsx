@@ -153,12 +153,12 @@ export const ContactPage = ({ isDarkMode }) => {
               </p>
             </div>
 
-            {/* Live Hyderabad IST Clock & Status Dossier */}
+            {/* Live Nellore AP / All Over India IST Clock & Status Dossier */}
             <div className="p-5 sm:p-6 rounded-3xl border border-ink-border dark:border-ink-dark-border bg-white dark:bg-canvas-dark-surface shadow-subtle min-w-[280px] sm:min-w-[320px] space-y-3 self-start lg:self-auto">
               <div className="flex items-center justify-between text-xs font-mono text-ink-muted dark:text-ink-dark-muted">
                 <span className="flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-accent" />
-                  <span>Hyderabad, India (IST)</span>
+                  <span>Nellore, AP • All Over India (IST)</span>
                 </span>
                 <span className="text-[10px] uppercase font-bold text-accent">UTC +5:30</span>
               </div>
@@ -315,9 +315,15 @@ export const ContactPage = ({ isDarkMode }) => {
 
                 <div className="pt-4 border-t border-ink-border/60 dark:border-ink-dark-border/60 space-y-3 font-mono text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-ink-muted">Location:</span>
+                    <span className="text-ink-muted">Location / Base:</span>
                     <span className="font-semibold text-ink-primary dark:text-[#F6FAFD]">
-                      Hyderabad, India
+                      Nellore, Andhra Pradesh
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-ink-muted">Service Scope:</span>
+                    <span className="font-semibold text-accent">
+                      All Over India • Remote Worldwide
                     </span>
                   </div>
                   <div className="flex items-center justify-between">

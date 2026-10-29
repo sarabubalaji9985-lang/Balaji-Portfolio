@@ -112,11 +112,11 @@ export const Footer = () => {
             <div className="flex flex-wrap items-center gap-2 pt-1">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono bg-canvas-subtle dark:bg-[#10243E] border border-ink-border/60 dark:border-ink-dark-border/60 text-ink-muted dark:text-[#B3CFE5]">
                 <MapPin className="w-3.5 h-3.5 text-accent" />
-                <span>Hyderabad, India • Remote Worldwide</span>
+                <span>Nellore, AP • All Over India • Remote Worldwide</span>
               </span>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono bg-canvas-subtle dark:bg-[#10243E] border border-ink-border/60 dark:border-ink-dark-border/60 text-ink-muted dark:text-[#B3CFE5]">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                <span>10+ Shipped Real Products</span>
+                <span>28+ Shipped Real Products</span>
               </span>
             </div>
           </div>

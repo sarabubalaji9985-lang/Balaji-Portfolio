@@ -274,7 +274,7 @@ export const AboutPage = ({ onOpenResume, isDarkMode }) => {
                     </span>
                     <span className="text-xs text-ink-primary dark:text-[#F6FAFD] flex items-center gap-1.5 mt-0.5">
                       <MapPin className="w-3.5 h-3.5 text-accent" />
-                      Hyderabad, India • Available for Remote Worldwide Roles
+                      Nellore, Andhra Pradesh • Serving All Over India &amp; Remote Worldwide
                     </span>
                   </div>
 

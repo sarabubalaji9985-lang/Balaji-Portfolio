@@ -9,12 +9,12 @@ export const PERSONAL_INFO = {
   shortBio: "I build responsive websites, useful web applications, and business-focused digital products. Since 2023, I've been turning ideas into practical digital experiences through freelance projects and professional development work.",
   currentRole: "Full Stack Developer at Dropyhub",
   freelanceSince: "2023",
-  location: "Hyderabad, India",
+  location: "Nellore, Andhra Pradesh • Serving All Over India & Remote Worldwide",
   phone: "+91 9030545655",
   rawPhone: "9030545655",
   email: "sarabu.balaji9985@gmail.com",
-  github: "https://github.com",
-  linkedin: "https://linkedin.com/in",
+  github: "https://github.com/sarabubalaji9985-lang",
+  linkedin: "https://www.linkedin.com/in/balaji-sarabu-666327291/",
   availability: "Available for freelance projects & selective full-stack roles",
 };
 
