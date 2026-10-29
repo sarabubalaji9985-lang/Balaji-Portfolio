@@ -36,11 +36,11 @@ export function App() {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme) {
-        return savedTheme === 'dark';
+        return savedTheme !== 'light';
       }
-      return false; // Default clean oceanic white mode
+      return document.documentElement.classList.contains('dark');
     }
-    return false;
+    return true; // Default dark theme
   });
 
   // Global Ctrl + K / Cmd + K listener

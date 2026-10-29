@@ -1,9 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#F6FAFD" />
+    <meta name="theme-color" content="#0A1931" />
+
+    <!-- Prevent Theme Flash (FOUC): Execute immediately before any paint -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('theme');
+          if (saved === 'light') {
+            document.documentElement.classList.remove('dark');
+          } else {
+            document.documentElement.classList.add('dark');
+            if (!saved) localStorage.setItem('theme', 'dark');
+          }
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
     
     <!-- Primary Meta Tags -->
     <title>Balaji Sarabu — Full Stack Developer &amp; Freelance Web Developer</title>
@@ -38,7 +55,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-canvas-light text-ink-primary font-sans antialiased selection:bg-accent/15 selection:text-ink-primary min-h-screen">
+  <body class="bg-canvas-dark text-ink-dark-primary font-sans antialiased selection:bg-accent/15 selection:text-ink-dark-primary min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
