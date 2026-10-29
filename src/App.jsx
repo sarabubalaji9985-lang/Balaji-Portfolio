@@ -15,6 +15,8 @@ import { SkillsPage } from './pages/SkillsPage';
 import { ContactPage } from './pages/ContactPage';
 import { ProjectDetail } from './pages/ProjectDetail';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Helper component to scroll to top on route change instantly with zero animation delay
 function ScrollToTop() {
@@ -136,6 +138,10 @@ export function App() {
           onToggleDarkMode={toggleDarkMode}
           onOpenResume={() => setIsResumeOpen(true)}
         />
+
+        {/* Vercel Web Analytics & Performance Insights */}
+        <Analytics />
+        <SpeedInsights />
       </div>
     </BrowserRouter>
   );
