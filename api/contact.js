@@ -37,7 +37,7 @@ export default async function handler(req, res) {
     const pass = process.env.SMTP_PASS;
     const port = parseInt(process.env.SMTP_PORT || '587', 10);
     const toEmail = process.env.EMAIL_TO || 'sarabu.balaji9985@gmail.com';
-    const fromEmail = process.env.EMAIL_FROM || user || 'contact@balajisarabu.com';
+    const fromEmail = process.env.EMAIL_FROM || user || 'contact@balajiprojects.in';
 
     if (host && user && pass) {
       const transporter = nodemailer.createTransport({
