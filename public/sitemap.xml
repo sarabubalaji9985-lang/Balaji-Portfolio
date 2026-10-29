@@ -2,61 +2,73 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://balajisarabu.dev/</loc>
-    <lastmod>2026-10-13</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://balajisarabu.dev/#projects</loc>
-    <lastmod>2026-10-13</lastmod>
+    <loc>https://balajisarabu.dev/projects</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/about</loc>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://balajisarabu.dev/#experience</loc>
-    <lastmod>2026-10-13</lastmod>
+    <loc>https://balajisarabu.dev/services</loc>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://balajisarabu.dev/#skills</loc>
-    <lastmod>2026-10-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://balajisarabu.dev/#contact</loc>
-    <lastmod>2026-10-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://balajisarabu.dev/project/resume-job-fit-pro</loc>
-    <lastmod>2026-10-13</lastmod>
+    <loc>https://balajisarabu.dev/skills</loc>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://balajisarabu.dev/project/pj-finance</loc>
-    <lastmod>2026-10-13</lastmod>
+    <loc>https://balajisarabu.dev/contact</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/nuzvid-agri-farms</loc>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://balajisarabu.dev/project/wouchify</loc>
-    <lastmod>2026-10-13</lastmod>
+    <loc>https://balajisarabu.dev/project/resumebuilderone</loc>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://balajisarabu.dev/project/hr-portal-sbvs</loc>
-    <lastmod>2026-10-13</lastmod>
+    <loc>https://balajisarabu.dev/project/shora-luxe</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/resumelabpro-ai</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/paadukundamdhaa</loc>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://balajisarabu.dev/project/dropyhub</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
