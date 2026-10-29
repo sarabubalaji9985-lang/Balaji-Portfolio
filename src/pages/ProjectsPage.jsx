@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ProjectShowcase } from '../components/projects/ProjectShowcase';
 import { PageCtaSection } from '../components/ui/PageCtaSection';
 
 export const ProjectsPage = ({ isDarkMode }) => {
+  useEffect(() => {
+    document.title = "Verified Projects & 28+ Production Deployments | Balaji Projects .P";
+  }, []);
+
   return (
     <main className="pt-20">
       <ProjectShowcase />

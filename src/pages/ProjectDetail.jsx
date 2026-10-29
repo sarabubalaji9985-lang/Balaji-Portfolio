@@ -21,12 +21,15 @@ export const ProjectDetail = ({ isDarkMode }) => {
   const { slug } = useParams();
   const navigate = useNavigate();
 
-  // Scroll to top on navigation
+  const project = projects.find((p) => p.slug === slug);
+
+  // Scroll to top on navigation & set dynamic SEO title
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [slug]);
-
-  const project = projects.find((p) => p.slug === slug);
+    if (project) {
+      document.title = `${project.title} — Production Architecture & Case Study | Balaji Projects .P`;
+    }
+  }, [slug, project]);
 
   if (!project) {
     return (

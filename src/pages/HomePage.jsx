@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { HeroSection } from '../components/hero/HeroSection';
 import { HeroTicker } from '../components/hero/HeroTicker';
@@ -13,6 +13,10 @@ import { ArrowRight, CheckCircle2, ArrowUpRight, Sparkles, Mail, MessageSquare }
 import { aiVoice } from '../utils/voiceAssistant';
 
 export const HomePage = ({ onOpenResume, isDarkMode }) => {
+  useEffect(() => {
+    document.title = "Balaji Projects .P — Full Stack Web Developer & Architecture Consultant";
+  }, []);
+
   return (
     <main>
       {/* 1. Hero with 3D Experience */}

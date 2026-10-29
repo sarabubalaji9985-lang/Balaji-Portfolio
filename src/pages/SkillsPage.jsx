@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SkillsGrid } from '../components/skills/SkillsGrid';
 import { PageCtaSection } from '../components/ui/PageCtaSection';
 import { engineeringPrinciples, projectSkillsMatrix, roadmapSkills } from '../data/skills';
@@ -20,6 +20,10 @@ import {
 import { Link } from 'react-router-dom';
 
 export const SkillsPage = ({ isDarkMode }) => {
+  useEffect(() => {
+    document.title = "Engineering Skills & Technical Architecture Matrix | Balaji Projects .P";
+  }, []);
+
   const highlights = [
     {
       title: 'Responsive & Accessible Interfaces',

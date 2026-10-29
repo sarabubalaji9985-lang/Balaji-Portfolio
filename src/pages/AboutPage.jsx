@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ExperienceTimeline } from '../components/experience/ExperienceTimeline';
 import { PageCtaSection } from '../components/ui/PageCtaSection';
@@ -32,6 +32,10 @@ import {
 import { aiVoice } from '../utils/voiceAssistant';
 
 export const AboutPage = ({ onOpenResume, isDarkMode }) => {
+  useEffect(() => {
+    document.title = "About Balaji Sarabu — Full Stack Software Engineer | Balaji Projects .P";
+  }, []);
+
   const principles = [
     {
       number: '01',

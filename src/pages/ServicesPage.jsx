@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ServicesSection } from '../components/services/ServicesSection';
 import { PageCtaSection } from '../components/ui/PageCtaSection';
 import { engagementModels, clientFaqs } from '../data/services';
@@ -23,6 +23,10 @@ import {
 import { Link } from 'react-router-dom';
 
 export const ServicesPage = ({ isDarkMode }) => {
+  useEffect(() => {
+    document.title = "Web Development Services & Software Architecture Solutions | Balaji Projects .P";
+  }, []);
+
   const [openFaqIndexes, setOpenFaqIndexes] = useState({ 0: true });
 
   const toggleFaq = (index) => {

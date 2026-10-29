@@ -27,6 +27,10 @@ import {
 } from 'lucide-react';
 
 export const ContactPage = ({ isDarkMode }) => {
+  useEffect(() => {
+    document.title = "Contact Balaji Projects .P — Hire Full Stack Web Developer | Nellore & Pan-India";
+  }, []);
+
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [currentTimeIST, setCurrentTimeIST] = useState('');
