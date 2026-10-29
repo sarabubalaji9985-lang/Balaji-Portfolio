@@ -12,7 +12,6 @@ import {
   Activity,
   Briefcase,
   Clock,
-  DollarSign,
   Mail,
   MessageSquare,
   ArrowRight
@@ -28,9 +27,8 @@ export const ContactForm = () => {
     name: '',
     email: '',
     phoneOrWhatsapp: '',
-    projectType: 'Full-Stack Web Application',
+    projectType: 'Full-Stack Web App',
     timeline: '2 to 4 Weeks',
-    budget: '$1,000 — $3,000',
     message: '',
     website_trap: '',
   });
@@ -54,14 +52,6 @@ export const ContactForm = () => {
     '2 to 4 Weeks',
     '1 to 2 Months',
     'Flexible',
-  ];
-
-  const budgetRanges = [
-    'Flexible / Open',
-    '< $1,000',
-    '$1,000 — $3,000',
-    '$3,000 — $5,000',
-    '$5,000+',
   ];
 
   const validate = () => {
@@ -100,7 +90,13 @@ export const ContactForm = () => {
     setResponseMessage('');
 
     try {
-      const result = await submitContactForm(formData);
+      const payload = {
+        ...formData,
+        formMode: formMode === 'detailed' ? 'Detailed Scope' : 'Quick Direct Message',
+        projectType: formMode === 'detailed' ? formData.projectType : 'Quick Direct Message',
+        timeline: formMode === 'detailed' ? formData.timeline : 'Not specified (Quick Ping)',
+      };
+      const result = await submitContactForm(payload);
       setStatus('success');
       aiVoice.speak('Your inquiry has been successfully dispatched. Balaji will review and respond within 24 hours.');
       setResponseMessage(result.message || 'Thank you! Your message has been received. I will review your requirements and reply promptly within 24 hours.');
@@ -108,9 +104,8 @@ export const ContactForm = () => {
         name: '',
         email: '',
         phoneOrWhatsapp: '',
-        projectType: 'Full-Stack Web Application',
+        projectType: 'Full-Stack Web App',
         timeline: '2 to 4 Weeks',
-        budget: '$1,000 — $3,000',
         message: '',
         website_trap: '',
       });
@@ -123,9 +118,10 @@ export const ContactForm = () => {
   };
 
   const generateMailtoLink = () => {
-    const subject = encodeURIComponent(`Project Inquiry: ${formData.projectType} from ${formData.name || 'Client'}`);
+    const isDetailed = formMode === 'detailed';
+    const subject = encodeURIComponent(`Project Inquiry: ${isDetailed ? formData.projectType : 'Quick Direct Message'} from ${formData.name || 'Client'}`);
     const body = encodeURIComponent(
-      `Hi Balaji,\n\nName: ${formData.name}\nEmail: ${formData.email}\nPhone/WhatsApp: ${formData.phoneOrWhatsapp || 'N/A'}\nProject Type: ${formData.projectType}\nTimeline: ${formData.timeline}\nBudget: ${formData.budget}\n\nProject Overview:\n${formData.message}\n`
+      `Hi Balaji,\n\nName: ${formData.name}\nEmail: ${formData.email}\nPhone / WhatsApp: ${formData.phoneOrWhatsapp || 'Not provided'}\nMode: ${isDetailed ? 'Detailed Scope' : 'Quick Direct Message'}\nProject Type: ${isDetailed ? formData.projectType : 'Quick Inquiry'}\nTimeline: ${isDetailed ? formData.timeline : 'Flexible'}\n\nProject Requirements / Message:\n${formData.message}\n`
     );
     return `mailto:${PERSONAL_INFO.email}?subject=${subject}&body=${body}`;
   };
@@ -244,60 +240,30 @@ export const ContactForm = () => {
                 </div>
               </div>
 
-              {/* Step 2: Timeline & Budget Chips */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-1">
-                {/* Timeline */}
-                <div className="space-y-2">
-                  <label className="block text-xs font-mono font-medium text-ink-primary dark:text-ink-dark-primary flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-accent" />
-                    <span>2. Desired Timeline</span>
-                  </label>
-                  <div className="flex flex-wrap gap-1.5">
-                    {timelineOptions.map((time) => {
-                      const isSelected = formData.timeline === time;
-                      return (
-                        <button
-                          key={time}
-                          type="button"
-                          onClick={() => handleChipSelect('timeline', time)}
-                          className={`px-2.5 py-1.5 rounded-lg text-xs font-mono transition-all ${
-                            isSelected
-                              ? 'bg-accent-subtle dark:bg-accent-deep/40 text-accent font-semibold border border-accent/40'
-                              : 'border border-ink-border/70 dark:border-ink-dark-border/70 text-ink-secondary dark:text-ink-dark-secondary hover:border-accent'
-                          }`}
-                        >
-                          {time}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Budget */}
-                <div className="space-y-2">
-                  <label className="block text-xs font-mono font-medium text-ink-primary dark:text-ink-dark-primary flex items-center gap-1.5">
-                    <DollarSign className="w-3.5 h-3.5 text-accent" />
-                    <span>3. Estimated Budget</span>
-                  </label>
-                  <div className="flex flex-wrap gap-1.5">
-                    {budgetRanges.map((b) => {
-                      const isSelected = formData.budget === b;
-                      return (
-                        <button
-                          key={b}
-                          type="button"
-                          onClick={() => handleChipSelect('budget', b)}
-                          className={`px-2.5 py-1.5 rounded-lg text-xs font-mono transition-all ${
-                            isSelected
-                              ? 'bg-accent-subtle dark:bg-accent-deep/40 text-accent font-semibold border border-accent/40'
-                              : 'border border-ink-border/70 dark:border-ink-dark-border/70 text-ink-secondary dark:text-ink-dark-secondary hover:border-accent'
-                          }`}
-                        >
-                          {b}
-                        </button>
-                      );
-                    })}
-                  </div>
+              {/* Step 2: Desired Timeline */}
+              <div className="space-y-2.5 pt-1">
+                <label className="block text-xs font-mono font-medium text-ink-primary dark:text-ink-dark-primary flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-accent" />
+                  <span>2. Desired Timeline</span>
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {timelineOptions.map((time) => {
+                    const isSelected = formData.timeline === time;
+                    return (
+                      <button
+                        key={time}
+                        type="button"
+                        onClick={() => handleChipSelect('timeline', time)}
+                        className={`px-3 py-2 rounded-xl text-xs font-mono font-medium transition-all duration-200 ${
+                          isSelected
+                            ? 'bg-palette-navy text-white shadow-sm dark:bg-accent dark:text-palette-dark ring-2 ring-accent/30 font-semibold'
+                            : 'border border-ink-border dark:border-ink-dark-border bg-canvas-card dark:bg-[#0c1f3d]/60 text-ink-secondary dark:text-ink-dark-secondary hover:border-accent hover:text-accent'
+                        }`}
+                      >
+                        {time}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -308,7 +274,7 @@ export const ContactForm = () => {
                   <span>Selected Scope:</span>
                 </span>
                 <span className="font-semibold truncate ml-2">
-                  {formData.projectType} • {formData.timeline} • {formData.budget}
+                  {formData.projectType} • Target: {formData.timeline}
                 </span>
               </div>
             </div>
