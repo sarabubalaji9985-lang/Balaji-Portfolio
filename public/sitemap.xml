@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Core Main Navigation Pages -->
   <url>
     <loc>https://balajisarabu.dev/</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <priority>1.00</priority>
   </url>
   <url>
     <loc>https://balajisarabu.dev/projects</loc>
@@ -16,13 +17,13 @@
     <loc>https://balajisarabu.dev/about</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.90</priority>
   </url>
   <url>
     <loc>https://balajisarabu.dev/services</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.90</priority>
   </url>
   <url>
     <loc>https://balajisarabu.dev/skills</loc>
@@ -34,8 +35,10 @@
     <loc>https://balajisarabu.dev/contact</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.90</priority>
   </url>
+
+  <!-- 28 Verified Production Project Dossier Pages -->
   <url>
     <loc>https://balajisarabu.dev/project/nuzvid-agri-farms</loc>
     <lastmod>2026-10-29</lastmod>
@@ -43,7 +46,7 @@
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://balajisarabu.dev/project/resumebuilderone</loc>
+    <loc>https://balajisarabu.dev/project/resume-builder-one</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
@@ -55,7 +58,7 @@
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://balajisarabu.dev/project/resumelabpro-ai</loc>
+    <loc>https://balajisarabu.dev/project/resume-lab-pro-ai</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
@@ -67,9 +70,141 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://balajisarabu.dev/project/weblearnai</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/dsprojectss</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/shanmukhaprojects</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/srivarahiagrofoods</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/sreekrishnabotanicals</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/vlinfra</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/vericon</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/bhujal</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/rsrexpress</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/latexinfotech</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/gyuso</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/sacaterers</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/landscape-weddings</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/goldentreelifespaces</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/sgilogistics</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/kpfurniture</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/taxwizsolutions</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/atlasfitnesselite</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/pathwayinternationaledu</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/autocollectrecovery</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/chatpatidelhi</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://balajisarabu.dev/project/pj-finance</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
     <loc>https://balajisarabu.dev/project/dropyhub</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.80</priority>
   </url>
 </urlset>
