@@ -217,8 +217,8 @@ export const Footer = () => {
       </div>
 
       {/* ── 3. BOTTOM ATTRIBUTION & BACK-TO-TOP BAR ── */}
-      <div className="border-t border-ink-border/70 dark:border-ink-dark-border/70 bg-canvas-subtle/30 dark:bg-[#071326] py-6 relative z-10">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-ink-muted dark:text-ink-dark-muted">
+      <div className="border-t border-ink-border/70 dark:border-ink-dark-border/70 bg-canvas-subtle/30 dark:bg-[#071326] pt-6 pb-28 sm:py-6 relative z-10">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-ink-muted dark:text-ink-dark-muted sm:pr-56">
           <div>
             <p>
               © {currentYear} <strong className="text-ink-primary dark:text-[#F6FAFD]">BALAJI projects.p</strong>. All rights reserved.
