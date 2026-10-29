@@ -18,11 +18,18 @@ import {
   ShoppingBag,
   Zap,
   Globe,
-  CheckCircle2
+  CheckCircle2,
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
+  SendHorizontal
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { generateChatResponse } from '../../utils/chatbotEngine.js';
 import { BALAJI_PROFILE } from '../../data/chatbotKnowledge.js';
+import { aiVoice } from '../../utils/voiceAssistant.js';
+import { submitContactForm } from '../../services/api.js';
 
 const QUICK_ACTIONS = [
   { id: 'new-website', label: 'Build a new website', icon: Globe },
@@ -32,6 +39,63 @@ const QUICK_ACTIONS = [
   { id: 'redesign', label: 'Redesign my website', icon: Layers },
   { id: 'talk-balaji', label: 'Talk to Balaji', icon: Phone },
 ];
+
+// Formats markdown bold (**text**) and bullet points (•) into clean HTML elements with zero asterisks
+const renderMessageContent = (text, isUser = false) => {
+  if (!text) return null;
+
+  const lines = text.split('\n');
+
+  return lines.map((line, lineIndex) => {
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      return <div key={lineIndex} className="h-1.5" />;
+    }
+
+    const isBullet = trimmed.startsWith('•') || trimmed.startsWith('- ') || trimmed.startsWith('* ');
+    const bulletContent = isBullet ? trimmed.replace(/^[•\-\*]\s*/, '') : line;
+
+    // Parse bold segments (**bold**)
+    const parts = [];
+    const regex = /\*\*(.*?)\*\*/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(bulletContent)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(bulletContent.substring(lastIndex, match.index));
+      }
+      parts.push(
+        <strong
+          key={`${lineIndex}-${match.index}`}
+          className={isUser ? 'font-bold' : 'font-semibold text-ink-primary dark:text-white'}
+        >
+          {match[1]}
+        </strong>
+      );
+      lastIndex = regex.lastIndex;
+    }
+    if (lastIndex < bulletContent.length) {
+      parts.push(bulletContent.substring(lastIndex));
+    }
+
+    if (isBullet) {
+      return (
+        <div key={lineIndex} className="flex items-start gap-2 py-0.5 my-0.5">
+          <span className="text-accent shrink-0 mt-1 text-xs font-bold leading-none">&bull;</span>
+          <span className="flex-1 leading-relaxed">{parts}</span>
+        </div>
+      );
+    }
+
+    return (
+      <div key={lineIndex} className="leading-relaxed my-0.5">
+        {parts}
+      </div>
+    );
+  });
+};
 
 export const BalajiChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,8 +112,62 @@ export const BalajiChatbot = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [hasUnread, setHasUnread] = useState(true);
 
+  // Feature 2 Upgrade 1: Voice Support (Speech-to-Text & Text-to-Speech)
+  const [isListening, setIsListening] = useState(false);
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
+  const recognitionRef = useRef(null);
+
+  // Feature 2 Upgrade 2: Proactive Smart Greeting (15-second pop)
+  const [showProactiveGreeting, setShowProactiveGreeting] = useState(false);
+  const [greetingDismissed, setGreetingDismissed] = useState(false);
+
+  // Feature 2 Upgrade 3: In-Chat Instant Lead Submission state
+  const [leadFormData, setLeadFormData] = useState({
+    name: '',
+    email: '',
+    phoneOrWhatsapp: '',
+    projectType: 'Full-Stack Web App',
+    message: '',
+  });
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [leadSubmitted, setLeadSubmitted] = useState(false);
+  const [showLeadModal, setShowLeadModal] = useState(false);
+
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  // Initialize Speech Recognition if supported
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-IN';
+
+      recognition.onstart = () => setIsListening(true);
+      recognition.onend = () => setIsListening(false);
+      recognition.onerror = () => setIsListening(false);
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        if (transcript) {
+          setInputValue((prev) => (prev ? `${prev} ${transcript}` : transcript));
+        }
+      };
+      recognitionRef.current = recognition;
+    }
+  }, []);
+
+  // 15-second Proactive Smart Greeting Trigger
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isOpen && !greetingDismissed) {
+        setShowProactiveGreeting(true);
+      }
+    }, 15000);
+
+    return () => clearTimeout(timer);
+  }, [isOpen, greetingDismissed]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -58,6 +176,7 @@ export const BalajiChatbot = () => {
   useEffect(() => {
     if (isOpen) {
       setHasUnread(false);
+      setShowProactiveGreeting(false);
       setTimeout(() => {
         inputRef.current?.focus();
         scrollToBottom();
@@ -68,6 +187,33 @@ export const BalajiChatbot = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
+
+  const toggleVoiceSpeech = () => {
+    if (isVoiceEnabled) {
+      aiVoice.stop();
+      setIsVoiceEnabled(false);
+    } else {
+      setIsVoiceEnabled(true);
+      aiVoice.speak('Voice assistance enabled.');
+    }
+  };
+
+  const toggleMicListening = () => {
+    if (!recognitionRef.current) {
+      alert('Speech recognition is not supported in this browser. Please type your message.');
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+    } else {
+      try {
+        recognitionRef.current.start();
+      } catch (e) {
+        // Recognition already started or error
+      }
+    }
+  };
 
   const handleSend = async (textToSend) => {
     const text = (textToSend || inputValue).trim();
@@ -110,13 +256,17 @@ export const BalajiChatbot = () => {
           }
         }
       } catch (err) {
-        // Fallback to local engine without error
+        // Fallback without breaking
       }
 
-      // 2. If remote AI not configured or returned local signal, use local conversational engine
+      // 2. If remote AI not configured, use local intelligent engine
       if (!botResponse) {
         botResponse = generateChatResponse(text, messages);
       }
+
+      // Detect if user provided an email or wants to submit lead
+      const hasEmailOrPhone = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/.test(text) || /\b\d{10}\b/.test(text.replace(/[^0-9]/g, ''));
+      const isBookingIntent = text.toLowerCase().includes('hire') || text.toLowerCase().includes('book') || text.toLowerCase().includes('estimate') || text.toLowerCase().includes('start project');
 
       const botMsg = {
         id: `bot-${Date.now()}`,
@@ -125,10 +275,20 @@ export const BalajiChatbot = () => {
         actionCard: botResponse.actionCard,
         projectRecommendation: botResponse.projectRecommendation,
         followUpOptions: botResponse.followUpOptions,
+        showBookingTrigger: hasEmailOrPhone || isBookingIntent,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
       setMessages((prev) => [...prev, botMsg]);
+
+      // Voice Output if enabled
+      if (isVoiceEnabled) {
+        const cleanSpokenText = botResponse.text
+          .replace(/[*_#•]/g, '')
+          .replace(/https?:\/\/\S+/g, '')
+          .slice(0, 180);
+        aiVoice.speak(cleanSpokenText);
+      }
     } catch (err) {
       const fallbackMsg = {
         id: `bot-${Date.now()}`,
@@ -152,6 +312,64 @@ export const BalajiChatbot = () => {
     }
   };
 
+  const handleInChatLeadSubmit = async (e) => {
+    e.preventDefault();
+    if (!leadFormData.name || !leadFormData.email) {
+      alert('Please provide your name and email address so Balaji can respond.');
+      return;
+    }
+
+    setLeadSubmitting(true);
+    try {
+      // Collect conversation transcript summary for Balaji's email
+      const transcriptSummary = messages
+        .map((m) => `${m.sender.toUpperCase()}: ${m.text}`)
+        .join('\n\n');
+
+      const payload = {
+        name: leadFormData.name,
+        email: leadFormData.email,
+        phoneOrWhatsapp: leadFormData.phoneOrWhatsapp || 'Provided in chat',
+        projectType: leadFormData.projectType || 'AI Chatbot Consultation',
+        timeline: 'As discussed with Balaji AI',
+        formMode: 'AI Chatbot Direct Booking',
+        message: `[AI Chatbot Lead Dispatch]\nClient Note: ${leadFormData.message || 'Client requested direct review via AI Assistant'}\n\n--- CHAT TRANSCRIPT ---\n${transcriptSummary}`,
+      };
+
+      await submitContactForm(payload);
+      setLeadSubmitted(true);
+      setShowLeadModal(false);
+
+      // Post success message in chat stream
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `bot-lead-success-${Date.now()}`,
+          sender: 'bot',
+          text: `🎉 Thank you, ${leadFormData.name}! Your project requirements and chat transcript have been successfully dispatched directly to Balaji Sarabu's priority email (sarabu.balaji9985@gmail.com).\n\nBalaji will review your scope and respond within 24 hours. For instant priority callback, feel free to also reach him on WhatsApp:`,
+          actionCard: {
+            type: 'contact',
+            name: BALAJI_PROFILE.founder,
+            phone: BALAJI_PROFILE.phone,
+            rawPhone: BALAJI_PROFILE.rawPhone,
+            email: BALAJI_PROFILE.email,
+            location: BALAJI_PROFILE.location,
+            availability: 'Lead Received & Under Review',
+          },
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
+
+      if (isVoiceEnabled) {
+        aiVoice.speak(`Thank you, ${leadFormData.name}. Your inquiry has been dispatched to Balaji.`);
+      }
+    } catch (err) {
+      alert('Failed to transmit lead. Please reach out directly on WhatsApp or Email.');
+    } finally {
+      setLeadSubmitting(false);
+    }
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -160,6 +378,8 @@ export const BalajiChatbot = () => {
   };
 
   const handleReset = () => {
+    aiVoice.stop();
+    setLeadSubmitted(false);
     setMessages([
       {
         id: `welcome-${Date.now()}`,
@@ -173,6 +393,54 @@ export const BalajiChatbot = () => {
 
   return (
     <>
+      {/* Proactive Smart Greeting Bubble (Pops after 15s) */}
+      {!isOpen && showProactiveGreeting && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-[88px] right-6 z-50 w-72 sm:w-80 p-3.5 rounded-2xl bg-white dark:bg-[#0c1f3d] border border-accent/50 shadow-2xl animate-in slide-in-from-bottom-3 duration-300"
+          style={{
+            boxShadow: '0 16px 36px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(74, 127, 167, 0.3)',
+          }}
+        >
+          <div className="flex items-center justify-between pb-1.5 border-b border-ink-border/50 dark:border-ink-dark-border/50">
+            <div className="flex items-center gap-1.5 text-accent font-mono text-[11px] font-bold">
+              <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+              <span>Balaji AI Assistant</span>
+            </div>
+            <button
+              onClick={() => {
+                setShowProactiveGreeting(false);
+                setGreetingDismissed(true);
+              }}
+              className="text-ink-muted hover:text-ink-primary dark:text-[#809FB9] dark:hover:text-white p-0.5"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <p className="text-xs text-ink-primary dark:text-[#F6FAFD] mt-2 leading-relaxed">
+            👋 Hi! Looking for a custom business website, e-commerce storefront, or SaaS platform? Ask me anything!
+          </p>
+
+          <button
+            type="button"
+            onClick={() => {
+              setIsOpen(true);
+              setShowProactiveGreeting(false);
+              setGreetingDismissed(true);
+            }}
+            className="mt-2.5 w-full py-1.5 px-3 rounded-lg text-xs font-mono font-semibold text-white flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02]"
+            style={{
+              background: 'linear-gradient(135deg, #1A3D63, #4A7FA7)',
+            }}
+          >
+            <span>Open Consultation</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Floating Chat Trigger Button */}
       <aside
         aria-label="Balaji AI Website Consultant"
@@ -189,7 +457,6 @@ export const BalajiChatbot = () => {
               border: '1px solid rgba(179, 207, 229, 0.3)',
             }}
           >
-            {/* Pulsing ambient dot */}
             <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400" />
@@ -220,9 +487,9 @@ export const BalajiChatbot = () => {
         <div
           role="dialog"
           aria-label="Balaji Projects AI Chat Window"
-          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-32px)] sm:w-[420px] max-w-[420px] h-[580px] max-h-[85vh] flex flex-col rounded-3xl border border-ink-border dark:border-ink-dark-border bg-white dark:bg-[#071326] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-32px)] sm:w-[420px] max-w-[420px] h-[600px] max-h-[88vh] flex flex-col rounded-3xl border border-ink-border dark:border-ink-dark-border bg-white dark:bg-[#071326] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200"
           style={{
-            boxShadow: '0 24px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(74, 127, 167, 0.2)',
+            boxShadow: '0 24px 60px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(74, 127, 167, 0.2)',
           }}
         >
           {/* Header */}
@@ -254,6 +521,19 @@ export const BalajiChatbot = () => {
             </div>
 
             <div className="flex items-center gap-1">
+              {/* Voice Output Toggle */}
+              <button
+                type="button"
+                onClick={toggleVoiceSpeech}
+                title={isVoiceEnabled ? 'Mute AI voice output' : 'Enable AI voice output'}
+                className={`p-1.5 rounded-lg transition-colors ${
+                  isVoiceEnabled ? 'text-accent bg-accent/20' : 'text-[#B3CFE5] hover:text-white hover:bg-white/10'
+                }`}
+              >
+                {isVoiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              </button>
+
+              {/* Reset Conversation */}
               <button
                 type="button"
                 onClick={handleReset}
@@ -262,6 +542,8 @@ export const BalajiChatbot = () => {
               >
                 <RotateCcw className="w-4 h-4" />
               </button>
+
+              {/* Close */}
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
@@ -288,16 +570,16 @@ export const BalajiChatbot = () => {
 
                 <div className={`max-w-[85%] space-y-2`}>
                   <div
-                    className={`p-3.5 rounded-2xl leading-relaxed whitespace-pre-wrap break-words ${
+                    className={`p-3.5 rounded-2xl leading-relaxed break-words ${
                       msg.sender === 'user'
                         ? 'bg-palette-navy text-white dark:bg-accent dark:text-palette-dark rounded-tr-xs font-medium'
                         : 'bg-white dark:bg-[#0c1f3d] border border-ink-border dark:border-ink-dark-border text-ink-primary dark:text-[#F6FAFD] rounded-tl-xs shadow-xs'
                     }`}
                   >
-                    {msg.text}
+                    {renderMessageContent(msg.text, msg.sender === 'user')}
                   </div>
 
-                  {/* 6 Quick Action Buttons (Rendered on welcome or on demand) */}
+                  {/* 6 Quick Action Buttons */}
                   {msg.showQuickActions && (
                     <div className="space-y-1.5 pt-1">
                       <span className="text-[10px] font-mono uppercase text-ink-secondary dark:text-[#809FB9] font-bold block mb-1">
@@ -320,6 +602,30 @@ export const BalajiChatbot = () => {
                           </button>
                         );
                       })}
+                    </div>
+                  )}
+
+                  {/* Feature 2 Upgrade: In-Chat Direct Lead Dispatch Button */}
+                  {msg.showBookingTrigger && !leadSubmitted && (
+                    <div className="p-3 rounded-xl bg-palette-navy/20 dark:bg-[#0c2242] border border-accent/50 space-y-2">
+                      <div className="flex items-center gap-2 text-accent font-semibold text-[11px]">
+                        <Zap className="w-3.5 h-3.5" />
+                        <span>Ready to convert this into a project?</span>
+                      </div>
+                      <p className="text-[11px] text-ink-secondary dark:text-[#B3CFE5]">
+                        You can send this chat transcript directly to Balaji's email right now with 1 click.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setShowLeadModal(true)}
+                        className="w-full py-2 px-3 rounded-lg text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all hover:opacity-95"
+                        style={{
+                          background: 'linear-gradient(135deg, #1A3D63, #4A7FA7)',
+                        }}
+                      >
+                        <span>🚀 Submit Inquiry to Balaji's Email</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   )}
 
@@ -451,7 +757,84 @@ export const BalajiChatbot = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Bar */}
+          {/* In-Chat Quick Lead Modal Overlay */}
+          {showLeadModal && (
+            <div className="p-4 bg-white dark:bg-[#081529] border-t border-accent/40 space-y-3 animate-in slide-in-from-bottom-2 duration-200">
+              <div className="flex items-center justify-between pb-1 border-b border-ink-border/60 dark:border-ink-dark-border/60">
+                <span className="text-xs font-mono font-bold text-accent uppercase flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5" />
+                  <span>Dispatch Requirements to Balaji</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowLeadModal(false)}
+                  className="text-ink-muted hover:text-ink-primary dark:text-[#809FB9]"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleInChatLeadSubmit} className="space-y-2.5 text-xs">
+                <div>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Your Full Name *"
+                    value={leadFormData.name}
+                    onChange={(e) => setLeadFormData((p) => ({ ...p, name: e.target.value }))}
+                    className="w-full px-3 py-2 rounded-lg bg-canvas-subtle dark:bg-[#0c1f3d] border border-ink-border/80 dark:border-ink-dark-border/80 text-ink-primary dark:text-white text-xs input-ocean"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="email"
+                    required
+                    placeholder="Email Address *"
+                    value={leadFormData.email}
+                    onChange={(e) => setLeadFormData((p) => ({ ...p, email: e.target.value }))}
+                    className="w-full px-3 py-2 rounded-lg bg-canvas-subtle dark:bg-[#0c1f3d] border border-ink-border/80 dark:border-ink-dark-border/80 text-ink-primary dark:text-white text-xs input-ocean"
+                  />
+                  <input
+                    type="text"
+                    placeholder="WhatsApp / Phone"
+                    value={leadFormData.phoneOrWhatsapp}
+                    onChange={(e) => setLeadFormData((p) => ({ ...p, phoneOrWhatsapp: e.target.value }))}
+                    className="w-full px-3 py-2 rounded-lg bg-canvas-subtle dark:bg-[#0c1f3d] border border-ink-border/80 dark:border-ink-dark-border/80 text-ink-primary dark:text-white text-xs input-ocean"
+                  />
+                </div>
+
+                <div className="flex gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowLeadModal(false)}
+                    className="flex-1 py-2 px-3 rounded-lg border border-ink-border dark:border-ink-dark-border text-ink-secondary dark:text-[#809FB9] text-xs font-mono"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={leadSubmitting}
+                    className="flex-1 py-2 px-3 rounded-lg text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+                    style={{
+                      background: 'linear-gradient(135deg, #1A3D63, #4A7FA7)',
+                    }}
+                  >
+                    {leadSubmitting ? (
+                      <span>Dispatching...</span>
+                    ) : (
+                      <>
+                        <span>Confirm & Send</span>
+                        <SendHorizontal className="w-3.5 h-3.5" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* Input Bar with Mic Button */}
           <div className="p-3 border-t border-ink-border/80 dark:border-ink-dark-border/80 bg-white dark:bg-[#071326]">
             <form
               onSubmit={(e) => {
@@ -460,15 +843,30 @@ export const BalajiChatbot = () => {
               }}
               className="flex items-center gap-2"
             >
+              {/* Mic Speech-to-Text Button */}
+              <button
+                type="button"
+                onClick={toggleMicListening}
+                title={isListening ? 'Stop listening' : 'Speak your question (Speech to Text)'}
+                className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all shrink-0 ${
+                  isListening
+                    ? 'bg-rose-500 text-white animate-pulse ring-2 ring-rose-400/50'
+                    : 'bg-canvas-subtle dark:bg-[#0c1f3d] text-ink-secondary dark:text-[#B3CFE5] border border-ink-border/70 dark:border-ink-dark-border/70 hover:border-accent hover:text-accent'
+                }`}
+              >
+                {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              </button>
+
               <input
                 ref={inputRef}
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask about websites, e-commerce, tech stack..."
+                placeholder={isListening ? 'Listening... Speak now' : 'Ask about websites, e-commerce, tech stack...'}
                 className="flex-1 px-3.5 py-2.5 rounded-xl text-xs input-ocean bg-canvas-subtle dark:bg-[#0c1f3d] border border-ink-border/70 dark:border-ink-dark-border/70 text-ink-primary dark:text-[#F6FAFD] focus:outline-none focus:ring-1 focus:ring-accent"
               />
+
               <button
                 type="submit"
                 disabled={!inputValue.trim() || isTyping}
@@ -481,10 +879,17 @@ export const BalajiChatbot = () => {
                 <Send className="w-4 h-4" />
               </button>
             </form>
-            <div className="pt-2 text-center">
+            <div className="pt-2 text-center flex items-center justify-center gap-2">
               <span className="text-[10px] font-mono text-ink-muted dark:text-[#63809C]">
-                Balaji Projects &bull; NDA Honored &bull; No Spam
+                Balaji Projects &bull; NDA Honored
               </span>
+              <button
+                type="button"
+                onClick={() => setShowLeadModal(true)}
+                className="text-[10px] font-mono text-accent hover:underline font-semibold"
+              >
+                &bull; Quick Inquiry
+              </button>
             </div>
           </div>
         </div>

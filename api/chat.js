@@ -67,10 +67,9 @@ export default async function handler(req, res) {
       return res.status(400).json({ success: false, message: 'Message is required.' });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = (process.env.GEMINI_API_KEY || '').trim();
 
     if (!apiKey) {
-      // Signal client to use smart knowledge base engine
       return res.status(200).json({
         success: true,
         useLocalEngine: true,
@@ -104,31 +103,39 @@ export default async function handler(req, res) {
       parts: [{ text: message }],
     });
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents,
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 600,
-          },
-        }),
+    // Try primary model (gemini-3.5-flash), with fallback to gemini-flash-lite-latest
+    const candidateModels = ['gemini-3.5-flash', 'gemini-flash-lite-latest'];
+    let candidateText = null;
+
+    for (const model of candidateModels) {
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents,
+              generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 600,
+              },
+            }),
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+            candidateText = text;
+            break;
+          }
+        }
+      } catch (err) {
+        console.warn(`Model ${model} attempt failed:`, err.message);
       }
-    );
-
-    if (!response.ok) {
-      console.warn('Gemini REST API non-OK status:', response.status);
-      return res.status(200).json({
-        success: true,
-        useLocalEngine: true,
-      });
     }
-
-    const data = await response.json();
-    const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (candidateText) {
       return res.status(200).json({
