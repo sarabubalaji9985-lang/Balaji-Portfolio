@@ -6,12 +6,12 @@ export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
   smtp: {
-    host: process.env.SMTP_HOST || '',
-    port: parseInt(process.env.SMTP_PORT || '587', 10),
-    secure: process.env.SMTP_SECURE === 'true',
-    user: process.env.SMTP_USER || '',
-    pass: process.env.SMTP_PASS || '',
-    fromEmail: process.env.EMAIL_FROM || 'contact@balajiprojectsp.in',
-    toEmail: process.env.EMAIL_TO || 'balaji.sarabu@example.com'
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT || '465', 10),
+    secure: process.env.SMTP_SECURE === 'true' || true,
+    user: process.env.SMTP_USER || 'sarabu.balaji9985@gmail.com',
+    pass: (process.env.SMTP_PASS || 'oiarkegxdtmgyabu').replace(/\s+/g, ''),
+    fromEmail: process.env.EMAIL_FROM || 'sarabu.balaji9985@gmail.com',
+    toEmail: process.env.EMAIL_TO || 'sarabu.balaji9985@gmail.com'
   }
 };

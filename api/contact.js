@@ -28,58 +28,82 @@ export default async function handler(req, res) {
     if (!name || !email || !message) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide name, email, and message.'
+        message: 'Please provide your name, email, and project message.'
       });
     }
 
-    const host = process.env.SMTP_HOST;
-    const user = process.env.SMTP_USER;
-    const pass = process.env.SMTP_PASS;
-    const port = parseInt(process.env.SMTP_PORT || '587', 10);
+    const host = process.env.SMTP_HOST || 'smtp.gmail.com';
+    const user = process.env.SMTP_USER || 'sarabu.balaji9985@gmail.com';
+    const pass = (process.env.SMTP_PASS || 'oiarkegxdtmgyabu').replace(/\s+/g, '');
+    const port = parseInt(process.env.SMTP_PORT || '465', 10);
     const toEmail = process.env.EMAIL_TO || 'sarabu.balaji9985@gmail.com';
-    const fromEmail = process.env.EMAIL_FROM || user || 'contact@balajiprojectsp.in';
 
-    if (host && user && pass) {
-      const transporter = nodemailer.createTransport({
-        host,
-        port,
-        secure: process.env.SMTP_SECURE === 'true' || port === 465,
-        auth: { user, pass }
-      });
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465 || process.env.SMTP_SECURE === 'true',
+      auth: { user, pass }
+    });
 
-      await transporter.sendMail({
-        from: fromEmail,
-        to: toEmail,
-        replyTo: email,
-        subject: `[Portfolio Inquiry] ${projectType || 'General'} - from ${name}`,
-        text: `Name: ${name}\nEmail: ${email}\nProject Type: ${projectType}\nBudget: ${budget}\nMessage:\n${message}`,
-        html: `
-          <div style="font-family: sans-serif; line-height: 1.6; color: #1c1c1c; max-width: 600px;">
-            <h2 style="color: #0A1931; margin-bottom: 8px;">New Project Inquiry</h2>
-            <p>You received a new inquiry through your portfolio website.</p>
-            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-              <tr><td style="padding: 8px; border-bottom: 1px solid #eaeaea; font-weight: bold; width: 140px;">Name:</td><td style="padding: 8px; border-bottom: 1px solid #eaeaea;">${name}</td></tr>
-              <tr><td style="padding: 8px; border-bottom: 1px solid #eaeaea; font-weight: bold;">Email:</td><td style="padding: 8px; border-bottom: 1px solid #eaeaea;"><a href="mailto:${email}">${email}</a></td></tr>
-              <tr><td style="padding: 8px; border-bottom: 1px solid #eaeaea; font-weight: bold;">Project Type:</td><td style="padding: 8px; border-bottom: 1px solid #eaeaea;">${projectType || 'Not specified'}</td></tr>
-              <tr><td style="padding: 8px; border-bottom: 1px solid #eaeaea; font-weight: bold;">Budget:</td><td style="padding: 8px; border-bottom: 1px solid #eaeaea;">${budget || 'Not specified'}</td></tr>
-            </table>
-            <h3 style="margin-top: 24px; color: #0A1931;">Message:</h3>
-            <div style="background: #F6FAFD; padding: 16px; border-radius: 8px; border: 1px solid #B3CFE5; white-space: pre-wrap; font-size: 15px;">${message}</div>
+    const info = await transporter.sendMail({
+      from: `"Balaji Projects .P Contact" <${user}>`,
+      to: toEmail,
+      replyTo: email,
+      subject: `🚨 [New Client Inquiry] ${projectType || 'Web Development'} — from ${name}`,
+      text: `New Inquiry Received:\n\nName: ${name}\nEmail: ${email}\nProject Type: ${projectType || 'Not specified'}\nBudget: ${budget || 'Not specified'}\n\nMessage:\n${message}\n\nReceived at: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; margin: 0 auto; background-color: #0A1931; border-radius: 16px; overflow: hidden; border: 1px solid #1A3D63; color: #F6FAFD;">
+          <div style="background: linear-gradient(135deg, #1A3D63, #4A7FA7); padding: 24px 28px;">
+            <p style="margin: 0; font-family: monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #B3CFE5;">New Lead Received</p>
+            <h2 style="margin: 6px 0 0 0; font-size: 22px; color: #FFFFFF; font-weight: 700;">Portfolio Client Inquiry</h2>
           </div>
-        `
-      });
-    }
+          
+          <div style="padding: 28px;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+              <tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid rgba(179,207,229,0.15); color: #809FB9; font-size: 13px; font-family: monospace; width: 130px;">PROSPECT:</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid rgba(179,207,229,0.15); color: #F6FAFD; font-size: 15px; font-weight: 600;">${name}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid rgba(179,207,229,0.15); color: #809FB9; font-size: 13px; font-family: monospace;">EMAIL:</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid rgba(179,207,229,0.15); color: #B3CFE5; font-size: 15px; font-weight: 500;">
+                  <a href="mailto:${email}" style="color: #B3CFE5; text-decoration: none;">${email}</a>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid rgba(179,207,229,0.15); color: #809FB9; font-size: 13px; font-family: monospace;">PROJECT TYPE:</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid rgba(179,207,229,0.15); color: #F6FAFD; font-size: 14px;">${projectType || 'Custom Web Application'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid rgba(179,207,229,0.15); color: #809FB9; font-size: 13px; font-family: monospace;">BUDGET TIER:</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid rgba(179,207,229,0.15); color: #B3CFE5; font-size: 14px; font-weight: 600;">${budget || 'Not specified'}</td>
+              </tr>
+            </table>
+
+            <div style="margin-top: 20px;">
+              <p style="margin: 0 0 8px 0; font-family: monospace; font-size: 12px; color: #809FB9; text-transform: uppercase;">Message Brief:</p>
+              <div style="background-color: #10243E; border: 1px solid #1A3D63; border-radius: 12px; padding: 18px; color: #F6FAFD; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${message}</div>
+            </div>
+
+            <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(179,207,229,0.15); font-size: 11px; font-family: monospace; color: #63809C;">
+              <span>Source: https://balajiprojectsp.in/contact</span>
+            </div>
+          </div>
+        </div>
+      `
+    });
+
+    console.log('Contact email dispatched successfully. ID:', info.messageId);
 
     return res.status(200).json({
       success: true,
-      message: `Thank you for reaching out, ${name}! Your message has been received. I will review your requirements and respond within 24 hours.`
+      message: `Thank you, ${name}! Your inquiry has been sent directly to Balaji Sarabu. I will review your requirements and respond within 24 hours.`
     });
   } catch (error) {
     console.error('API Contact Submission Error:', error);
     return res.status(500).json({
       success: false,
-      message: 'An unexpected error occurred while transmitting your message. Please reach out directly to sarabu.balaji9985@gmail.com or WhatsApp +91 9030545655.'
+      message: 'Failed to transmit message. Please reach out directly to sarabu.balaji9985@gmail.com or WhatsApp +91 9030545655.'
     });
   }
 }
-
