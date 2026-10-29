@@ -58,8 +58,9 @@ export const Hero3D = ({ isDarkMode = false }) => {
       heroGroup.position.set(2.8, 0, 0);
       heroGroup.scale.set(1, 1, 1);
     } else if (width <= 768) {
-      heroGroup.position.set(0.5, 1.0, -1);
-      heroGroup.scale.set(0.75, 0.75, 0.75);
+      // On mobile: push further back in Z-space & scale down so particles act as elegant ambient background, not clashing with text
+      heroGroup.position.set(0, 0.3, -2.5);
+      heroGroup.scale.set(0.62, 0.62, 0.62);
     } else {
       heroGroup.position.set(1.5, 0, 0);
       heroGroup.scale.set(0.9, 0.9, 0.9);
@@ -422,7 +423,7 @@ export const Hero3D = ({ isDarkMode = false }) => {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 w-full h-full pointer-events-none select-none z-0"
+      className="absolute inset-0 w-full h-full pointer-events-none select-none z-0 opacity-40 sm:opacity-100 transition-opacity duration-500"
     />
   );
 };

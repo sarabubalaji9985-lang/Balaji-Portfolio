@@ -31,6 +31,9 @@ export const HeroSection = ({ onOpenResume, isDarkMode }) => {
       {/* ── FULL-BLEED 3D HEROIC BACKGROUND PARTICLE MESH (NO BOX STRUCTURE) ── */}
       <Hero3D isDarkMode={isDarkMode} />
 
+      {/* Mobile-Only Readability Scrim: Soft ambient backdrop so 3D depth remains visible while text is 100% crisp */}
+      <div className="sm:hidden absolute inset-0 bg-gradient-to-b from-canvas-light/95 via-canvas-light/75 to-canvas-light/95 dark:from-[#0A1931]/95 dark:via-[#0A1931]/75 dark:to-[#0A1931]/95 pointer-events-none z-[1]" />
+
       {/* Atmospheric ambient glows */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-accent-light/30 dark:bg-accent/10 blur-[140px] pointer-events-none" />
       <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-accent/20 dark:bg-accent-deep/30 blur-[120px] pointer-events-none" />
@@ -55,7 +58,7 @@ export const HeroSection = ({ onOpenResume, isDarkMode }) => {
             <p className="text-xs font-mono font-bold uppercase tracking-widest text-ink-muted dark:text-ink-dark-muted">
               Full Stack Developer • Since 2023
             </p>
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-display font-medium tracking-tighter-editorial text-ink-primary dark:text-ink-dark-primary leading-[1.12] sm:leading-[1.08]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-display font-medium tracking-tighter-editorial text-ink-primary dark:text-ink-dark-primary leading-[1.12] sm:leading-[1.08] drop-shadow-sm dark:drop-shadow-[0_2px_14px_rgba(10,25,49,0.95)]">
               I build digital
               <br />
               products that{' '}
@@ -66,7 +69,7 @@ export const HeroSection = ({ onOpenResume, isDarkMode }) => {
           </div>
 
           {/* Authentic Narrative */}
-          <p className="hero-reveal text-sm sm:text-lg text-ink-secondary dark:text-ink-dark-secondary leading-relaxed max-w-xl font-light">
+          <p className="hero-reveal text-sm sm:text-lg text-ink-secondary dark:text-ink-dark-secondary leading-relaxed max-w-xl font-light drop-shadow-xs dark:drop-shadow-[0_1px_8px_rgba(10,25,49,0.85)]">
             I'm{' '}
             <strong className="font-semibold text-ink-primary dark:text-ink-dark-primary">
               Balaji Sarabu
