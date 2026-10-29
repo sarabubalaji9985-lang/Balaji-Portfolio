@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://balajiprojects.in/sitemap.xml
+Sitemap: https://balajiprojectsp.in/sitemap.xml

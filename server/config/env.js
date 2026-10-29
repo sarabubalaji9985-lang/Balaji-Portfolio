@@ -11,7 +11,7 @@ export const config = {
     secure: process.env.SMTP_SECURE === 'true',
     user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASS || '',
-    fromEmail: process.env.EMAIL_FROM || 'contact@balajiprojects.in',
+    fromEmail: process.env.EMAIL_FROM || 'contact@balajiprojectsp.in',
     toEmail: process.env.EMAIL_TO || 'balaji.sarabu@example.com'
   }
 };
