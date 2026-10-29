@@ -15,7 +15,7 @@ export const WhatsAppFloatingButton = () => {
   return (
     <aside
       aria-label="WhatsApp Quick Contact"
-      className="fixed bottom-6 right-6 z-50 flex items-center group pointer-events-auto"
+      className="fixed bottom-[86px] right-6 z-40 flex items-center group pointer-events-auto"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

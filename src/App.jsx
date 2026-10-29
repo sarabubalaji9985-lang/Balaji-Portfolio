@@ -6,6 +6,7 @@ import { CustomCursor } from './components/layout/CustomCursor';
 import { ResumeModal } from './components/ui/ResumeModal';
 import { NeonBlobLoader } from './components/ui/NeonBlobLoader';
 import { WhatsAppFloatingButton } from './components/ui/WhatsAppFloatingButton';
+import { BalajiChatbot } from './components/chat/BalajiChatbot';
 import { CommandPalette } from './components/ui/CommandPalette';
 import { HomePage } from './pages/HomePage';
 import { ProjectsPage } from './pages/ProjectsPage';
@@ -130,6 +131,9 @@ export function App() {
 
         {/* Global Floating WhatsApp Contact Action */}
         <WhatsAppFloatingButton />
+
+        {/* Global Floating AI Website Consultant & Sales Assistant */}
+        <BalajiChatbot />
 
         {/* Global Ctrl + K Command Palette */}
         <CommandPalette
